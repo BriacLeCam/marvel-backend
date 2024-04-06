@@ -28,7 +28,7 @@ router.post("/user/signup", fileUpload(), async (req, res) => {
     //if email doesn't exists => continue signup process
     else {
       //check if all required informations are provided
-      if (req.body.email && req.body.password && req.body.account.username) {
+      if (req.body.email && req.body.password && req.body.username) {
         //if so, generate a token & a salt then hash the password+salt combination
         const token = uid2(64);
         const salt = uid2(64);
@@ -37,26 +37,11 @@ router.post("/user/signup", fileUpload(), async (req, res) => {
         // create new user with those credentials
         const newUser = new User({
           email: req.body.email,
-          account: {
-            username: req.body.account.username,
-          },
+          username: req.body.username,
           token: token,
           hash: hash,
           salt: salt,
         });
-
-        //if there is an avatar image provided, upload on cloudinary and save result in user's account
-        if (req.files?.avatar) {
-          const result = await cloudinary.uploader.upload(
-            convertToBase64(req.files.avatar),
-            {
-              folder: `marvel-backend-avatar${newUser._id}`,
-              public_id: "avatar",
-            }
-          );
-
-          newUser.account.avatar = result;
-        }
 
         //save newUser in database
         await newUser.save();
@@ -64,9 +49,7 @@ router.post("/user/signup", fileUpload(), async (req, res) => {
         const responseObject = {
           _id: newUser._id,
           token: newUser.token,
-          account: {
-            username: newUser.account.username,
-          },
+          username: newUser.username,
         };
 
         return res.status(201).json(responseObject);
@@ -77,6 +60,33 @@ router.post("/user/signup", fileUpload(), async (req, res) => {
       }
     }
   } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+router.post("/user/login", async (req, res) => {
+  try {
+    const user = await User.findOne({ email: req.body.email });
+    //is there an user with this email
+    if (user) {
+      //check password
+
+      if (
+        SHA256(req.body.password + user.salt).toString(encBase64) === user.hash
+      ) {
+        return res.status(200).json({
+          _id: user._id,
+          token: user.token,
+          account: user.account,
+        });
+      } else {
+        return res.status(401).json({ error: "Invalid email or password" });
+      }
+    } else {
+      return res.status(400).json({ message: "User not found" });
+    }
+  } catch (error) {
+    console.log(error.message);
     return res.status(500).json({ message: error.message });
   }
 });
