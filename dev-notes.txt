@@ -1,0 +1,17 @@
+{
+  "email": "briac@mail.com",
+  "account": {
+    "username": "Briac"
+  },
+  "password" : "azertyui"
+}
+
+me renvoi
+
+{
+    "_id": "660d8f4b296438d71e5d7524",
+    "token": "LCnXCddfHVHMsnPX8Cm1-fyzxiH5IHU2",
+    "account": {
+        "username": "Briac"
+    }
+}
