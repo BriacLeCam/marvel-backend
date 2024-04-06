@@ -91,35 +91,4 @@ router.post("/user/login", async (req, res) => {
   }
 });
 
-// router.post("/user/login", async (req, res) => {
-//   try {
-//     // get user's salt & hash
-//     // console.log(req.body);
-//     const userFound = await User.findOne({ email: req.body.email });
-
-//     if (!userFound) {
-//       return res.status(401).json("Invalid email or password");
-//     }
-
-//     // adds salt to user's password and generate a new hash that will be compared to the one saved in the DB
-//     const newHash = SHA256(req.body.password + userFound.salt).toString(
-//       encBase64
-//     );
-//     if (newHash === userFound.hash) {
-//       const responseObject = {
-//         _id: userFound._id,
-//         token: userFound.token,
-//         account: {
-//           username: userFound.account.username,
-//         },
-//       };
-//       return res.status(200).json(responseObject);
-//     } else {
-//       return res.status(401).json("Email ou password incorrect");
-//     }
-//   } catch (error) {
-//     return res.status(500).json({ message: error.message });
-//   }
-// });
-
 module.exports = router;
