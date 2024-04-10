@@ -9,7 +9,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-mongoose.connect("mongodb://localhost:27017/marvel");
+mongoose.connect(process.env.MONGODB_URI);
 cloudinary.config({
   cloud_name: "dp4lxciap",
   api_key: process.env.CLOUDINARY_API_KEY,
