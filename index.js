@@ -9,7 +9,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-mongoose.connect(process.env.MONGODB_URI);
+mongoose.connect("mongodb://localhost:27017/marvel");
 cloudinary.config({
   cloud_name: "dp4lxciap",
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -18,7 +18,9 @@ cloudinary.config({
 
 app.get("/", (req, res) => {
   try {
-    return res.status(200).json("⚡️ Welcome on my Marvel server ⚡️");
+    return res
+      .status(200)
+      .json({ message: "⚡️ Welcome on my Marvel server ⚡️" });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
